@@ -1,0 +1,43 @@
+{
+  "name": "readit",
+  "private": true,
+  "version": "0.0.1",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "nodemon --exec electron . --watch ./ --ext .js,.html,.css,.vue",
+    "app:dist": "electron-builder",
+    "pack": "electron-packager . testexe --platform=win32 --arch=x64  --out=./out --asar --app-version=0.0.1"
+  },
+  "dependencies": {
+    "@kangc/v-md-editor": "next",
+    "electron": "^20.1.4",
+    "electron-builder": "^23.3.3",
+    "electron-win-state": "^1.1.22",
+    "got": "^11.8.5",
+    "highlight.js": "^11.6.0",
+    "image-type": "^4.1.0",
+    "lodash": "^4.17.21",
+    "marked": "^4.1.0",
+    "nodemon": "^2.0.19",
+    "normalize.css": "^8.0.1",
+    "pinia": "^2.0.22",
+    "randomstring": "^1.2.2",
+    "store2": "^2.14.2",
+    "stylus": "^0.59.0",
+    "vite": "^3.1.1",
+    "vue": "^3.2.25",
+    "vue-router": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/marked": "^4.0.7",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "electron": "^19.0.8",
+    "electron-builder": "^23.1.0",
+    "electron-packager": "^16.0.0",
+    "nodemon": "^2.0.19",
+    "vite": "^2.9.9"
+  }
+}
