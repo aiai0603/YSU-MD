@@ -1,21 +1,22 @@
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow, dialog } = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const createTray = require("./tray/tray");
+const Store = require("electron-store");
+const store = new Store();
+const action = require("./controller/saveFile");
+const closeWin = require("./controller/closeWin");
 
 
-// 获取网站的截图
-require("./controller/getSource");
-
-// alert
-require("./controller/alert");
 
 // open window
 require("./controller/openWindow");
 
-
 // buildMenu
 require("./controller/buildMenu");
+
+// close
+require("./controller/closeWin");
 
 const createWindow = () => {
   const winState = new WinState({
@@ -27,14 +28,12 @@ const createWindow = () => {
   });
 
   const win = new BrowserWindow({
-    // 自定义窗口状态
     ...winState.winOptions,
-    title:"YSU-MD",
+    title: "YSU-MD",
 
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: true,
-      // 定义预加载的js
       preload: path.resolve(__dirname, "./preload/index.js"),
     },
 
@@ -43,12 +42,17 @@ const createWindow = () => {
 
   win.loadURL("http://127.0.0.1:5173/");
 
-  win.webContents.openDevTools();
-
   winState.manage(win);
 
   win.on("ready-to-show", () => {
     win.show();
+  });
+
+  win.on("close", (e) => {
+    e.preventDefault(); 
+
+    closeWin(e,win);
+    
   });
 
   createTray(app, win);

@@ -1,12 +1,10 @@
-const { app, Menu, ipcMain } = require("electron");
-const action = require("./saveas");
+const { app, Menu, BrowserWindow } = require("electron");
+const action = require("./saveFile");
+const action2 = require("./openFile");
+const Store = require("electron-store");
+const store = new Store();
 
 const isMac = process.platform === "darwin";
-
-let event = null;
-ipcMain.on("on-opendialog-event", (e, args) => {
-  event = e;
-});
 
 const template = [
   // { role: 'appMenu' }
@@ -35,38 +33,56 @@ const template = [
       {
         label: "打开",
         click: () => {
-          action.openFile();
+          action2.openFile();
         },
+        accelerator: 'CommandOrControl+Alt+O'
       },
       {
         label: "新建",
-        click: () => {
-          
-        },
+        click: () => {},
+        accelerator: 'CommandOrControl+Alt+A'
       },
-      { label: "关闭" },
-      { label: "另存为" },
-      { label: "保存" },
-    ],
-  },
-
-  {
-    label: "段落",
-    submenu: [
-      { label: "标题" },
-      
-    ],
-  },
-
-  {
-    label: "格式",
-    submenu: [
       {
-        label: "黑体",
+        label: "关闭",
+        click: () => {
+          BrowserWindow.getFocusedWindow().webContents.send("update-counter",
+          "close");
+        },
+        accelerator: 'CommandOrControl+Alt+C'
       },
-     
+      {
+        label: "另存为",
+        click: () => {
+          store.set("file","");
+          let data = store.get("word")
+          action.saveas(data);
+        },
+        accelerator: 'CommandOrControl+Alt+S'
+      },
+      {
+        label: "保存",
+        click: () => {
+          let data = store.get("word")
+          action.saveas(data);
+        },
+        accelerator: 'CommandOrControl+S'
+      },
     ],
   },
+
+  // {
+  //   label: "段落",
+  //   submenu: [{ label: "标题" }],
+  // },
+
+  // {
+  //   label: "格式",
+  //   submenu: [
+  //     {
+  //       label: "黑体",
+  //     },
+  //   ],
+  // },
 
   // { role: 'editMenu' }
   {

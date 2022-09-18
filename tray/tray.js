@@ -16,7 +16,9 @@ function createTray(app, win) {
     },
     {
       label: "退出",
-      click: () => {},
+      click: () => {
+        win.close();
+      },
     },
   ]);
   tray.setContextMenu(contextMenu);
