@@ -7,8 +7,6 @@ const store = new Store();
 const action = require("./controller/saveFile");
 const closeWin = require("./controller/closeWin");
 
-
-
 // open window
 require("./controller/openWindow");
 
@@ -17,6 +15,12 @@ require("./controller/buildMenu");
 
 // close
 require("./controller/closeWin");
+
+// open
+require("./controller/openFile");
+
+// save
+require("./controller/saveFile");
 
 const createWindow = () => {
   const winState = new WinState({
@@ -40,6 +44,8 @@ const createWindow = () => {
     show: false,
   });
 
+  store.set("update",false);
+
   win.loadURL("http://127.0.0.1:5173/");
 
   winState.manage(win);
@@ -49,10 +55,18 @@ const createWindow = () => {
   });
 
   win.on("close", (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
-    closeWin(e,win);
-    
+    closeWin(function (idx) {
+      if (idx.response == 0) {
+        let data = store.get("word");
+        action.saveas(data);
+      } else if (idx.response == 1) {
+        win.destroy();
+      } else {
+        e.preventDefault();
+      }
+    });
   });
 
   createTray(app, win);

@@ -1,9 +1,7 @@
 const { dialog } = require("electron");
-const Store = require("electron-store");
-const store = new Store();
 
-
-const closeWin = (e,win) => {
+//关闭的组件，做了一个小封装
+const closeWin = (cb) => {
   dialog
     .showMessageBox({
       type: "info",
@@ -13,16 +11,8 @@ const closeWin = (e,win) => {
       cancelId: 2,
     })
     .then((idx) => {
-      if (idx.response == 0) {
-        let data = store.get("word");
-        action.saveas(data);
-      } else if (idx.response == 1) {
-        win.destroy();
-      } else {
-        e.preventDefault();
-      }
+      cb(idx);
     });
 };
 
-
-module.exports =  closeWin ;
+module.exports = closeWin;

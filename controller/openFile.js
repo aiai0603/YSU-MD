@@ -25,7 +25,10 @@ const openFile = async () => {
             };
             store.set("file", res.filePaths[0]);
             store.set("word", String(data));
-            resolve(data);
+            resolve({
+              data:data,
+              name:res.filePaths[0].split("\\").pop()
+            });
           });
         }
       })
@@ -44,7 +47,11 @@ const openFileLast = async () => {
         alertDialog("打开失败,请确保文件没有重命名或者改变路径")
         reject(err);
       }
-      resolve(data);
+      store.set("word", String(data));
+      resolve({
+        data:data,
+        name:path.replace(/(.*\/)*([^.]+).*/ig,"$2")
+      });
     });
   });
 };
@@ -59,5 +66,3 @@ ipcMain.handle("new-file-event", async () => {
     store.set("word", String(""));
 });
 
-
-module.exports = { openFile };

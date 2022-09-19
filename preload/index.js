@@ -1,16 +1,21 @@
 const { contextBridge, ipcRenderer } = require("electron");
+const Store = require("electron-store");
+const store = new Store();
 
-//打开文件（选择框）
-const openFile = async () => {
-  let result = await ipcRenderer.invoke("open-file-event", true);
-  return result;
+//获得更新状态
+const getUpdate = () => {
+  let change = store.get("update");
+  return change;
 };
 
-//打开上一次的文件
-const openFileLast = async () => {
-  let result = await ipcRenderer.invoke("open-file-event", false);
-  console.log(result);
-  return result;
+//更新数据
+const updateText = () => {
+  let change = store.get("update");
+  if (change === false) {
+    store.set("update", true);
+    return false;
+  }
+  return true;
 };
 
 //自动保存
@@ -18,9 +23,20 @@ const autoSave = (text) => {
   ipcRenderer.send("on-auto-save", text);
 };
 
+//打开文件（选择框）
+const openFile = async (option) => {
+  let result = await ipcRenderer.invoke("open-file-event", option);
+  return result;
+};
+
 //保存文件
-const saveFile = (data) => {
-  ipcRenderer.invoke("on-save-file", data);
+const saveFile = async (data, option, force) => {
+  let result = ipcRenderer.invoke("on-save-file", {
+    data: data,
+    option: option,
+    force: force,
+  });
+  return result;
 };
 
 //新建文件
@@ -28,30 +44,35 @@ const newFile = async () => {
   ipcRenderer.invoke("new-file-event");
 };
 
-const alert = (msg) => {
-  ipcRenderer.invoke("on-alert-event", msg);
+//系统关闭文件
+const systemClose = (callback) => {
+  ipcRenderer.on("system-close", callback);
 };
 
-const close = () => {
-  ipcRenderer.invoke("on-close-event");
+//系统打开文件
+const systemOpenFile = (callback) => {
+  ipcRenderer.on("system-open-file", callback);
 };
 
-const openDialog = () => {
-  ipcRenderer.send("on-opendialog-event");
+//系统新建文件
+const systemNewFile = (callback) => {
+  ipcRenderer.on("system-new-file", callback);
 };
 
-const onUpdateCounter = (callback) =>
-  ipcRenderer.on("update-counter", callback);
+const systemSaveFile = (callback) => {
+  ipcRenderer.on("system-save-file", callback);
+};
 
 contextBridge.exposeInMainWorld("myApi", {
-  onUpdateCounter,
-  openDialog,
-  alert,
-  open,
-  close,
+  getUpdate,
+  updateText,
+  store,
+  systemNewFile,
+  systemOpenFile,
+  systemSaveFile,
+  systemClose,
   openFile,
   saveFile,
-  openFileLast,
   autoSave,
   newFile,
 });

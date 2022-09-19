@@ -1,8 +1,5 @@
 const { app, Menu, BrowserWindow } = require("electron");
-const action = require("./saveFile");
-const action2 = require("./openFile");
-const Store = require("electron-store");
-const store = new Store();
+
 
 const isMac = process.platform === "darwin";
 
@@ -33,39 +30,43 @@ const template = [
       {
         label: "打开",
         click: () => {
-          action2.openFile();
+          BrowserWindow.getFocusedWindow().webContents.send("system-open-file");
         },
-        accelerator: 'CommandOrControl+Alt+O'
+        accelerator: "CommandOrControl+Alt+O",
       },
       {
         label: "新建",
-        click: () => {},
-        accelerator: 'CommandOrControl+Alt+A'
+        click: () => {
+          BrowserWindow.getFocusedWindow().webContents.send("system-new-file");
+        },
+        accelerator: "CommandOrControl+Alt+A",
       },
       {
         label: "关闭",
         click: () => {
-          BrowserWindow.getFocusedWindow().webContents.send("update-counter",
-          "close");
+          BrowserWindow.getFocusedWindow().webContents.send("system-close");
         },
-        accelerator: 'CommandOrControl+Alt+C'
+        accelerator: "CommandOrControl+Alt+C",
       },
       {
         label: "另存为",
         click: () => {
-          store.set("file","");
-          let data = store.get("word")
-          action.saveas(data);
+          BrowserWindow.getFocusedWindow().webContents.send(
+            "system-save-file",
+            true
+          );
         },
-        accelerator: 'CommandOrControl+Alt+S'
+        accelerator: "CommandOrControl+Alt+S",
       },
       {
         label: "保存",
         click: () => {
-          let data = store.get("word")
-          action.saveas(data);
+          BrowserWindow.getFocusedWindow().webContents.send(
+            "system-save-file",
+            false
+          );
         },
-        accelerator: 'CommandOrControl+S'
+        accelerator: "CommandOrControl+S",
       },
     ],
   },
