@@ -8,19 +8,15 @@ const getUpdate = () => {
   return change;
 };
 
-//更新数据
-const updateText = () => {
-  let change = store.get("update");
-  if (change === false) {
-    store.set("update", true);
-    return false;
-  }
-  return true;
+const getSaved = () => {
+  store.set("file", "");
+  return store.get("word");
 };
 
 //自动保存
 const autoSave = (text) => {
-  ipcRenderer.send("on-auto-save", text);
+  store.set("update", true);
+  store.set("word", text);
 };
 
 //打开文件（选择框）
@@ -31,12 +27,20 @@ const openFile = async (option) => {
 
 //保存文件
 const saveFile = async (data, option, force) => {
-  let result = ipcRenderer.invoke("on-save-file", {
+  let result = await ipcRenderer.invoke("on-save-file", {
     data: data,
     option: option,
     force: force,
   });
+
+  console.log(result)
+
   return result;
+};
+
+//新建文件
+const quitFile = async () => {
+  ipcRenderer.invoke("close-event");
 };
 
 //新建文件
@@ -59,13 +63,21 @@ const systemNewFile = (callback) => {
   ipcRenderer.on("system-new-file", callback);
 };
 
+//系统保存文件
 const systemSaveFile = (callback) => {
   ipcRenderer.on("system-save-file", callback);
 };
 
+//关闭应用
+const systemQuit = (callback) => {
+  ipcRenderer.on("system-quit", callback);
+};
+
 contextBridge.exposeInMainWorld("myApi", {
+  getSaved,
+  quitFile,
+  systemQuit,
   getUpdate,
-  updateText,
   store,
   systemNewFile,
   systemOpenFile,

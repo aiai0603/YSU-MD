@@ -1,4 +1,4 @@
-const { dialog } = require("electron");
+const { dialog, ipcMain } = require("electron");
 
 //关闭的组件，做了一个小封装
 const closeWin = (cb) => {
@@ -14,5 +14,7 @@ const closeWin = (cb) => {
       cb(idx);
     });
 };
+
+
 
 module.exports = closeWin;
