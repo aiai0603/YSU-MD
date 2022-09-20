@@ -1,8 +1,10 @@
 {
-  "name": "readit",
+  "name": "ysu-md",
   "private": true,
   "version": "0.0.1",
   "main": "main.js",
+  "description":"a simple tools for markdown edit",
+  "author":"fw zhang",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,10 +13,25 @@
     "app:dist": "electron-builder",
     "pack": "electron-packager . testexe --platform=win32 --arch=x64  --out=./out --asar --app-version=0.0.1"
   },
+  "build": {
+    "appId": "YSU-MD Beta1.0.0",
+    "copyright": "@mxhyydslzz20k",
+    "productName": "YSU-MD",
+    "dmg": {
+      "background": "public/icon.png",
+      "window": {
+        "x": 100,
+        "y": 100,
+        "width": 1000,
+        "height": 800
+      }
+    },
+    "win": {
+      "icon": "public/icon.png"
+    }
+  },
   "dependencies": {
     "@kangc/v-md-editor": "next",
-    "electron": "^20.1.4",
-    "electron-builder": "^23.3.3",
     "electron-win-state": "^1.1.22",
     "got": "^11.8.5",
     "highlight.js": "^11.6.0",

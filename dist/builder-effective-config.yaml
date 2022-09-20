@@ -1,0 +1,17 @@
+directories:
+  output: dist
+  buildResources: build
+appId: YSU-MD Beta1.0.0
+copyright: '@mxhyydslzz20k'
+productName: YSU-MD
+dmg:
+  background: public/icon.png
+  window:
+    x: 100
+    'y': 100
+    width: 1000
+    height: 800
+win:
+  icon: public/icon.png
+files: []
+electronVersion: 20.1.4
