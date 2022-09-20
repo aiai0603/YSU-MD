@@ -1,4 +1,4 @@
-const { Tray, Menu } = require("electron");
+const { Tray, Menu , BrowserWindow } = require("electron");
 
 function createTray(app, win) {
   const tray = new Tray("./public/icon.png");
@@ -17,6 +17,7 @@ function createTray(app, win) {
     {
       label: "退出",
       click: () => {
+        win.show();
         win.close();
       },
     },

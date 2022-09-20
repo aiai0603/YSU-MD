@@ -7,15 +7,36 @@ const text = ref("");
 //是否展示输入框
 const file = ref(true);
 
+//操作一标题
 const changeTitle = (title) => {
   document.title = title;
 };
+
+const notice = () => {
+  var option = {
+    title: "系统提示",
+    body: "保存成功！",
+  };
+  new window.Notification(option.title, option);
+};
+
+//系统关闭
+myApi.systemQuit(async () => {
+  if (file.value) {
+    handleQuit(true);
+  } else {
+    let re = await handleSave(!file.value);
+    if (re !== 2) {
+      handleQuit(true);
+    }
+  }
+});
 
 //系统关闭文件
 myApi.systemClose(async () => {
   if (!file.value) {
     let re = await handleSave(!file.value);
-    if (re === 0 || re === 1) {
+    if (re !== 2) {
       file.value = true;
       changeTitle("YSU-MD");
     }
@@ -25,9 +46,9 @@ myApi.systemClose(async () => {
 //系统保存文件（另存为）
 myApi.systemSaveFile(async (event, data) => {
   if (!file.value) {
-    await handleSave(file.value, data);
-    if (document.title.endsWith("*")) {
-      changeTitle(document.title.slice(0, document.title.length - 1));
+    let re = await handleSave(file.value, data);
+    if (re !== 2) {
+      changeTitle(re);
     }
   }
 });
@@ -38,7 +59,7 @@ myApi.systemOpenFile(async () => {
     handleOpen(true);
   } else {
     let re = await handleSave(!file.value);
-    if (re === 0 || re === 1) {
+    if (re !== 2) {
       handleOpen(true);
     }
   }
@@ -50,7 +71,7 @@ myApi.systemNewFile(async () => {
     handleNewFile();
   } else {
     let re = await handleSave(!file.value);
-    if (re === 0 || re === 1) {
+    if (re !== 2) {
       handleNewFile();
     }
   }
@@ -67,9 +88,8 @@ const handleEvent = async (event) => {
         if (event.ctrlKey && event.code === "KeyS") {
           // 在这里写保存需要执行的逻辑
           let re = await handleSave(file.value);
-          if (re === 0 || re === 1) {
-            if (document.title.endsWith("*"))
-              changeTitle(document.title.slice(0, document.title.length - 1));
+          if (re !== 2) {
+            changeTitle(re);
           }
         }
         if (event.ctrlKey && event.code === "KeyS") return false;
@@ -86,18 +106,33 @@ onBeforeUnmount(async () => {
   window.removeEventListener("keydown", handleEvent); // 在页面销毁的时候记得解除
 });
 
+//退出程序
+const handleQuit = () => {
+  myApi.quitFile();
+};
+
+//自动恢复
+const handleCover = () => {
+  let re = myApi.getSaved();
+  text.value = re;
+  file.value = false;
+  changeTitle("new file1.md");
+};
+
 //自动保存本地的函数
 const handleAutoSave = async (text, html) => {
-  let change = await myApi.updateText();
-  if (!change) {
+  if (!document.title.endsWith("*")) {
     changeTitle(document.title + "*");
   }
-  myApi.autoSave(text);
+  await myApi.autoSave(text);
 };
 
 //保存文件
 const handleSave = async (option, force = false) => {
   let re = await myApi.saveFile(text.value, option, force);
+  if (re !== 2) {
+    //notice();
+  }
   return re;
 };
 
@@ -131,6 +166,9 @@ const handleNewFile = async () => {
     </div>
     <div class="list-item" @click="handleOpen(false)">
       <img src="../../public/last.png" alt="" />上次打开
+    </div>
+    <div class="list-item" @click="handleCover">
+      <img src="../../public/recover.png" alt="" />恢复数据
     </div>
     <!-- <div class="list-item" @click="resolve">恢复数据</div> -->
   </div>
@@ -183,7 +221,6 @@ const handleNewFile = async () => {
 }
 
 .list-item {
-  margin: 10px;
   cursor: pointer;
   font-size: 16px;
   display: flex;

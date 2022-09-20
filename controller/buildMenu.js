@@ -32,21 +32,21 @@ const template = [
         click: () => {
           BrowserWindow.getFocusedWindow().webContents.send("system-open-file");
         },
-        accelerator: "CommandOrControl+Alt+O",
+        accelerator: "CommandOrControl+O",
       },
       {
         label: "新建",
         click: () => {
           BrowserWindow.getFocusedWindow().webContents.send("system-new-file");
         },
-        accelerator: "CommandOrControl+Alt+A",
+        accelerator: "CommandOrControl+N",
       },
       {
         label: "关闭",
         click: () => {
           BrowserWindow.getFocusedWindow().webContents.send("system-close");
         },
-        accelerator: "CommandOrControl+Alt+C",
+        accelerator: "Alt+F4",
       },
       {
         label: "另存为",
@@ -56,7 +56,7 @@ const template = [
             true
           );
         },
-        accelerator: "CommandOrControl+Alt+S",
+        accelerator: "CommandOrControl+Shift+S",
       },
       {
         label: "保存",
@@ -110,7 +110,7 @@ const template = [
             },
           ]
         : [
-            { label: "删除", role: "delete" },
+            { label: "删除", role: "delete", accelerator: "CommandOrControl+D", },
             { type: "separator" },
             { label: "全选", role: "selectAll" },
           ]),
@@ -125,8 +125,8 @@ const template = [
       { label: "打开调试", role: "toggleDevTools" },
       { type: "separator" },
       { label: "重置视图", role: "resetZoom" },
-      { label: "视图减小", role: "zoomIn" },
-      { label: "视图放大", role: "zoomOut" },
+      { label: "视图放大", role: "zoomIn" },
+      { label: "视图减小", role: "zoomOut" },
       { type: "separator" },
       { label: "全屏幕", role: "togglefullscreen" },
       { label: "最小化", role: "minimize" },
@@ -150,6 +150,7 @@ const template = [
           const { shell } = require("electron");
           await shell.openExternal("https://github.com/aiai0603");
         },
+        accelerator: "CommandOrControl+Shift+H",
       },
     ],
   },

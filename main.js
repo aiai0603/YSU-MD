@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const createTray = require("./tray/tray");
@@ -7,8 +7,6 @@ const store = new Store();
 const action = require("./controller/saveFile");
 const closeWin = require("./controller/closeWin");
 
-// open window
-require("./controller/openWindow");
 
 // buildMenu
 require("./controller/buildMenu");
@@ -25,7 +23,7 @@ require("./controller/saveFile");
 const createWindow = () => {
   const winState = new WinState({
     dafaultWidth: 1000,
-    defaultHeight: 800,
+    defaultHeight: 1000,
     electronStoreOptions: {
       name: "window-state-main",
     },
@@ -44,7 +42,12 @@ const createWindow = () => {
     show: false,
   });
 
-  store.set("update",false);
+  ipcMain.handle("close-event", async (event, data) => {
+    win.destroy();
+  });
+
+  store.set("update", false);
+  store.set("word", "");
 
   win.loadURL("http://127.0.0.1:5173/");
 
@@ -56,17 +59,7 @@ const createWindow = () => {
 
   win.on("close", (e) => {
     e.preventDefault();
-
-    closeWin(function (idx) {
-      if (idx.response == 0) {
-        let data = store.get("word");
-        action.saveas(data);
-      } else if (idx.response == 1) {
-        win.destroy();
-      } else {
-        e.preventDefault();
-      }
-    });
+    BrowserWindow.getFocusedWindow().webContents.send("system-quit");
   });
 
   createTray(app, win);

@@ -20,14 +20,15 @@ const openFile = async () => {
         if (!res.canceled) {
           fs.readFile(res.filePaths[0], "utf8", (err, data) => {
             if (err) {
-              alertDialog("打开失败,请确保文件可以正常使用")
+              alertDialog("打开失败,请确保文件可以正常使用");
               reject(err);
-            };
+            }
             store.set("file", res.filePaths[0]);
             store.set("word", String(data));
+            store.set("update", false);
             resolve({
-              data:data,
-              name:res.filePaths[0].split("\\").pop()
+              data: data,
+              name: res.filePaths[0].split("\\").pop(),
             });
           });
         }
@@ -44,13 +45,14 @@ const openFileLast = async () => {
   return new Promise((resolve, reject) => {
     fs.readFile(path, "utf8", (err, data) => {
       if (err) {
-        alertDialog("打开失败,请确保文件没有重命名或者改变路径")
+        alertDialog("打开失败,请确保文件没有重命名或者改变路径");
         reject(err);
       }
       store.set("word", String(data));
+      store.set("update", false);
       resolve({
-        data:data,
-        name:path.replace(/(.*\/)*([^.]+).*/ig,"$2")
+        data: data,
+        name: path.split("\\").pop(),
       });
     });
   });
@@ -62,7 +64,6 @@ ipcMain.handle("open-file-event", async (event, data) => {
 });
 
 ipcMain.handle("new-file-event", async () => {
-    store.set("file", "");
-    store.set("word", String(""));
+  store.set("file", "");
+  store.set("word", String(""));
 });
-
