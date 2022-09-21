@@ -17,7 +17,7 @@ npm start
 
 4.打包发布
 ``` js
-npm run dev
+npm run build
 electron-builder
 ```
 
