@@ -14,4 +14,4 @@ dmg:
 win:
   icon: public/icon.png
 files: []
-electronVersion: 20.1.4
+electronVersion: 19.0.17

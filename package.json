@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.1",
   "main": "main.js",
-  "description":"a simple tools for markdown edit",
-  "author":"fw zhang",
+  "description": "a simple tools for markdown edit",
+  "author": "fw zhang",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@kangc/v-md-editor": "next",
+    "electron-store": "^8.1.0",
     "electron-win-state": "^1.1.22",
     "got": "^11.8.5",
     "highlight.js": "^11.6.0",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@types/marked": "^4.0.7",
     "@vitejs/plugin-vue": "^2.3.3",
+    "electron-store": "^8.1.0",
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
     "electron-packager": "^16.0.0",

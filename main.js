@@ -20,7 +20,7 @@ require("./controller/openFile");
 // save
 require("./controller/saveFile");
 
-const createWindow = () => {
+const createWindow = async () => {
   const winState = new WinState({
     dafaultWidth: 1000,
     defaultHeight: 1000,
@@ -47,9 +47,18 @@ const createWindow = () => {
   });
 
   store.set("update", false);
-  store.set("word", "");
 
-  win.loadURL("http://127.0.0.1:5173/");
+ 
+    // Load the index.html when not in development
+    if (app.isPackaged) {
+      win.loadURL(`file://${__dirname}/common/index.html`);
+    } else {
+      let url = "http://localhost:5173"; // 本地启动的vue项目路径
+      win.loadURL(url);
+    }
+
+
+  
 
   winState.manage(win);
 
