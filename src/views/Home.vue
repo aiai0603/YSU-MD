@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, onBeforeUnmount, ref } from "vue";
+import { apiGetUserInfo } from "../api/picture";
 
 //内容
 const text = ref("");
@@ -54,7 +55,11 @@ myApi.systemSaveFile(async (event, data) => {
 });
 
 //系统打开文件
-myApi.systemOpenFile(async () => {
+myApi.systemOpenFile(async (event, data = true) => {
+  if (data) {
+    handleOpen(false);
+    return;
+  }
   if (file.value) {
     handleOpen(true);
   } else {
@@ -151,6 +156,22 @@ const handleNewFile = async () => {
   text.value = "";
   file.value = false;
 };
+
+ const handleUploadImage = (event, insertImage, files) => {
+//   // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
+//   console.log(files);
+
+//   apiGetUserInfo(file[0]).then((res) => {
+//     insertImage({
+//       url: "data",
+//       desc: "test",
+//       // width: 'auto',
+//       // height: 'auto',
+//     });
+//   });
+
+//   // 此处只做示例
+ };
 </script>
 
 
@@ -178,7 +199,10 @@ const handleNewFile = async () => {
     v-model="text"
     :autofocus="true"
     :default-fullscreen="true"
+    left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code "
     right-toolbar="preview toc sync-scroll"
+    :disabled-menus="[]"
+    @upload-image="handleUploadImage"
     height="100%"
     width="100%"
     ref="editor"

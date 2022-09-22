@@ -7,7 +7,6 @@ const store = new Store();
 const action = require("./controller/saveFile");
 const closeWin = require("./controller/closeWin");
 
-
 // buildMenu
 require("./controller/buildMenu");
 
@@ -48,25 +47,24 @@ const createWindow = async () => {
 
   store.set("update", false);
 
- 
-    // Load the index.html when not in development
-    if (app.isPackaged) {
-      win.loadURL(`file://${__dirname}/common/index.html`);
-    } else {
-      let url = "http://localhost:5173"; // 本地启动的vue项目路径
-      win.loadURL(url);
-    }
-
-
-  
+  // Load the index.html when not in development
+  if (app.isPackaged) {
+    win.loadURL(`file://${__dirname}/common/index.html`);
+  } else {
+    let url = "http://localhost:5173"; // 本地启动的vue项目路径
+    win.loadURL(url);
+  }
 
   winState.manage(win);
 
   win.on("ready-to-show", () => {
     win.show();
+    const filePath = process.argv[1];
+    filePath!="." && onOpenFile(filePath);
   });
 
   win.on("close", (e) => {
+    win.show();
     e.preventDefault();
     BrowserWindow.getFocusedWindow().webContents.send("system-quit");
   });
@@ -85,3 +83,8 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
+
+const onOpenFile = (url) => {
+  store.set("file", url);
+  BrowserWindow.getFocusedWindow().webContents.send("system-open-file");
+};

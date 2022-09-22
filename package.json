@@ -17,6 +17,19 @@
     "appId": "YSU-MD Beta1.0.0",
     "copyright": "@mxhyydslzz20k",
     "productName": "YSU-MD",
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "fileAssociations": [
+      {
+        "name": "ysu-md file",
+        "ext": "md",
+        "description": "md file"
+      }
+    ],
     "dmg": {
       "background": "public/icon.png",
       "window": {
@@ -32,6 +45,7 @@
   },
   "dependencies": {
     "@kangc/v-md-editor": "next",
+    "axios": "^0.27.2",
     "electron-store": "^8.1.0",
     "electron-win-state": "^1.1.22",
     "got": "^11.8.5",
