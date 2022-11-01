@@ -1,12 +1,15 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, provide } from "vue";
 import { apiGetUserInfo } from "../api/picture";
+import mdEditerVue from "../component/md-editer.vue";
 
 //内容
 const text = ref("");
 
 //是否展示输入框
 const file = ref(true);
+
+provide("text", text);
 
 //操作一标题
 const changeTitle = (title) => {
@@ -82,6 +85,12 @@ myApi.systemNewFile(async () => {
   }
 });
 
+const editsave = async () => {
+  let re = await handleSave(file.value);
+  if (re !== 2) {
+    changeTitle(re);
+  }
+};
 //键盘事件+绑定事件，优化todo
 const handleEvent = async (event) => {
   if (!file.value) {
@@ -124,14 +133,6 @@ const handleCover = () => {
   changeTitle("new file1.md");
 };
 
-//自动保存本地的函数
-const handleAutoSave = async (text, html) => {
-  if (!document.title.endsWith("*")) {
-    changeTitle(document.title + "*");
-  }
-  await myApi.autoSave(text);
-};
-
 //保存文件
 const handleSave = async (option, force = false) => {
   let re = await myApi.saveFile(text.value, option, force);
@@ -156,22 +157,6 @@ const handleNewFile = async () => {
   text.value = "";
   file.value = false;
 };
-
- const handleUploadImage = (event, insertImage, files) => {
-//   // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
-//   console.log(files);
-
-//   apiGetUserInfo(file[0]).then((res) => {
-//     insertImage({
-//       url: "data",
-//       desc: "test",
-//       // width: 'auto',
-//       // height: 'auto',
-//     });
-//   });
-
-//   // 此处只做示例
- };
 </script>
 
 
@@ -194,26 +179,19 @@ const handleNewFile = async () => {
     <!-- <div class="list-item" @click="resolve">恢复数据</div> -->
   </div>
 
-  <v-md-editor
-    v-else
-    v-model="text"
-    :autofocus="true"
-    :default-fullscreen="true"
-    left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code "
-    right-toolbar="preview toc sync-scroll"
-    :disabled-menus="[]"
-    @upload-image="handleUploadImage"
-    height="100%"
-    width="100%"
-    ref="editor"
-    @change="handleAutoSave"
-  ></v-md-editor>
+  <div v-else class="edit">
+    <mdEditerVue v-model:text="text" @editsave="editsave" />
+  </div>
 </template>
 
 <style scoped>
+.edit {
+  width: 100%;
+  height: 100%;
+}
 .list {
   width: 100%;
-  margin-top: 100px;
+  padding-top: 100px;
   display: flex;
   flex-flow: column;
   justify-content: center;

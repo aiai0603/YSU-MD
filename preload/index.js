@@ -73,6 +73,12 @@ const systemQuit = (callback) => {
   ipcRenderer.on("system-quit", callback);
 };
 
+
+//系统黑体
+const systemBlack = (callback) => {
+  ipcRenderer.on("system-black", callback);
+};
+
 contextBridge.exposeInMainWorld("myApi", {
   getSaved,
   quitFile,
@@ -87,4 +93,5 @@ contextBridge.exposeInMainWorld("myApi", {
   saveFile,
   autoSave,
   newFile,
+  systemBlack
 });

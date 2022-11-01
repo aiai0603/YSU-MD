@@ -1,11 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain ,globalShortcut} = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const createTray = require("./tray/tray");
 const Store = require("electron-store");
 const store = new Store();
-const action = require("./controller/saveFile");
-const closeWin = require("./controller/closeWin");
 
 // buildMenu
 require("./controller/buildMenu");
@@ -33,6 +31,7 @@ const createWindow = async () => {
     title: "YSU-MD",
 
     webPreferences: {
+      webSecurity: false,
       contextIsolation: true,
       nodeIntegration: true,
       preload: path.resolve(__dirname, "./preload/index.js"),
@@ -60,7 +59,7 @@ const createWindow = async () => {
   win.on("ready-to-show", () => {
     win.show();
     const filePath = process.argv[1];
-    filePath!="." && onOpenFile(filePath);
+    filePath != "." && onOpenFile(filePath);
   });
 
   win.on("close", (e) => {
@@ -74,6 +73,12 @@ const createWindow = async () => {
 
 app.whenReady().then(() => {
   createWindow();
+
+  globalShortcut.register("CommandOrControl+B",function(){
+    BrowserWindow.getFocusedWindow().webContents.send("system-black");
+    
+  });
+
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

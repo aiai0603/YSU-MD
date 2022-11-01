@@ -5,9 +5,9 @@ const service = axios.create({
   baseURL: "http://47.97.158.11:8803/upload/uploadPic", // 所有的请求地址前缀部分
   timeout: 60000, // 请求超时时间毫
   headers: {
+    "Access-Control-Allow-Origin": "*",
     // 设置后端需要的传参类型
     "Content-Type": "multipart/form-data",
-    "Access-Control-Allow-Origin": "*",
   },
 });
 

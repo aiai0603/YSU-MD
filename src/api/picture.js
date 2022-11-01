@@ -4,6 +4,8 @@ import httpRequest from "./api";
 
 // 获取用户信息
 export function apiGetUserInfo(param) {
+
+  console.log(param)
   return httpRequest({
     method: "post",
     data: param,
